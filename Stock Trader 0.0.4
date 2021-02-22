@@ -61,9 +61,8 @@ def program():
 
     current_time=int(current_time)
     print(current_time)
-
-    #while current_time<end_time:
-    for i in range(30):
+    
+    while current_time<end_time:
         print("Working. . .")
         t = time.localtime()
         current_time = time.strftime("%H%M%S", t)
