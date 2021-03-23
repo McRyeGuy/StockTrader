@@ -13,9 +13,9 @@ Total take away $219
 ![Figure_1_SMA_STOCK_TRADER](https://user-images.githubusercontent.com/78456437/112168415-a94bc500-8bc7-11eb-93f6-f1a0f764035c.png)
 
 
-Long_Trading:
+# Long_Trading:
 
-# Stock being used is JNJ
+Stock being used is JNJ
 
 Potential Profit $35.48
 
