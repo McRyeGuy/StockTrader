@@ -33,5 +33,5 @@ If you have found this code profitable or you have learned something, I would gr
 
 Paypal: paypal.me/Kruegerryan
 
-Also if you need any help with setting this code up,
+Also if you need any help with setting this code up, use the issues tab and i'll answer your question ASAP.
 
