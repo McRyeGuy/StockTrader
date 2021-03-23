@@ -23,7 +23,7 @@ Stock being used is AMZN
 
 Potential Profit $340.23
 
-Total take away $3501
+Total take away $2501
 
 ![Figure_4_SMA_Stock_Trader](https://user-images.githubusercontent.com/78456437/112181044-72c77780-8bd2-11eb-85e5-7ba2e66a9c3d.png)
 
