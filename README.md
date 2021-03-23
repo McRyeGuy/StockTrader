@@ -12,6 +12,21 @@ Total take away $219
 
 ![Figure_1_SMA_STOCK_TRADER](https://user-images.githubusercontent.com/78456437/112168415-a94bc500-8bc7-11eb-93f6-f1a0f764035c.png)
 
+Stock being used is XOM
+
+Potential Profit $-22.14
+
+Total take away $33
+![Figure_3_SMA_Stock_trader](https://user-images.githubusercontent.com/78456437/112180632-1a907580-8bd2-11eb-9cde-405fc0e8a500.png)
+
+Stock being used is AMZN
+
+Potential Profit $340.23
+
+Total take away $3501
+
+![Figure_4_SMA_Stock_Trader](https://user-images.githubusercontent.com/78456437/112181044-72c77780-8bd2-11eb-85e5-7ba2e66a9c3d.png)
+
 
 # Long_Trading:
 
