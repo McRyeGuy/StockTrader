@@ -27,6 +27,8 @@ Total take away $3501
 
 ![Figure_4_SMA_Stock_Trader](https://user-images.githubusercontent.com/78456437/112181044-72c77780-8bd2-11eb-85e5-7ba2e66a9c3d.png)
 
+Note: I am trying to fix the problem of not selling when the stock goes way down and not buying more when the stock goes way up. I will update this repo when I find a solution. In the mean time use this code for steady stocks like JNJ, not Tesla or Amazon. This will improve you chances of profit and make your profit more stable for longer periods of time.
+
 
 # Long_Trading:
 
