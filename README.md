@@ -29,7 +29,9 @@ As you can see both Stock Trading Systems work ok, but there is room for improve
 I am not a financial advisor. I am merely a 16-year old who wants to make money in the stock market. Don't invest any money that you are not willing to lose. I have gain my knowledge by YouTube video and stack overflow. I HAVE NEVER TAKEN A FINANCIAL CLASS OR A FULL PROGRAMMING CLASS.
 
 # Donations
-If you have found this code profitable or you have learned something, I would greatly appreciate a donation:
+If you have found this code profitable or you have learned something, I would greatly appreciate a donation: 
 
 Paypal: paypal.me/Kruegerryan
+
+Also if you need any help with setting this code up,
 
