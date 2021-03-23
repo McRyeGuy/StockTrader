@@ -30,5 +30,6 @@ I am not a financial advisor. I am merely a 16-year old who wants to make money 
 
 # Donations
 If you have found this code profitable or you have learned something, I would greatly appreciate a donation:
+
 Paypal: paypal.me/Kruegerryan
 
