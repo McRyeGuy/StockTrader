@@ -29,7 +29,26 @@ Total take away $2501
 
 Note: I am trying to fix the problem of not selling when the stock goes way down and not buying more when the stock goes way up. I will update this repo when I find a solution. In the mean time use this code for steady stocks like JNJ, not Tesla or Amazon. This will improve you chances of profit and make your profit more stable for longer periods of time.
 #This problem has been patched but code isn't updated yet
+This graph shows udated code
 
+Stock being used is JNJ
+
+Potential Profit $59
+![Figure_1](https://user-images.githubusercontent.com/78456437/112655937-46f0ff80-8e27-11eb-9836-30135a174e5e.png)
+
+
+Stock being used is AMZN
+
+Potential Profit $1465.23
+
+![Figure_1](https://user-images.githubusercontent.com/78456437/112656175-815a9c80-8e27-11eb-94a2-34856cec946c.png)
+
+
+Stock being used is XOM
+
+Potential Profit $12.83
+
+![Figure_1_SMA_STOCK_TRADER](https://user-images.githubusercontent.com/78456437/112168415-a94bc500-8bc7-11eb-93f6-f1a0f764035c.png)
 # Long_Term_Trading:
 
 Stock being used is JNJ
