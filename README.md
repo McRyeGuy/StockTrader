@@ -34,7 +34,7 @@ This graph shows udated code
 Stock being used is JNJ
 
 Potential Profit $59
-![Figure_1](https://user-images.githubusercontent.com/78456437/112655937-46f0ff80-8e27-11eb-9836-30135a174e5e.png)
+![Figure_1_SMA_STOCK_TRADER](https://user-images.githubusercontent.com/78456437/112168415-a94bc500-8bc7-11eb-93f6-f1a0f764035c.png)
 
 
 Stock being used is AMZN
@@ -48,7 +48,7 @@ Stock being used is XOM
 
 Potential Profit $12.83
 
-![Figure_1_SMA_STOCK_TRADER](https://user-images.githubusercontent.com/78456437/112168415-a94bc500-8bc7-11eb-93f6-f1a0f764035c.png)
+![Figure_1](https://user-images.githubusercontent.com/78456437/112655937-46f0ff80-8e27-11eb-9836-30135a174e5e.png)
 # Long_Term_Trading:
 
 Stock being used is JNJ
