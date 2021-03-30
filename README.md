@@ -29,7 +29,8 @@ Total take away $2501
 
 Note: I am trying to fix the problem of not selling when the stock goes way down and not buying more when the stock goes way up. I will update this repo when I find a solution. In the mean time use this code for steady stocks like JNJ, not Tesla or Amazon. This will improve you chances of profit and make your profit more stable for longer periods of time.
 #This problem has been patched but code isn't updated yet
-This graph shows udated code
+
+These graphs show updated code
 
 Stock being used is JNJ
 
