@@ -3,17 +3,20 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import yfinance as yf
+import time
+from datetime import datetime
 
 plt.style.use('fivethirtyeight')
 warnings.filterwarnings('ignore')
-stockname = "GC=F"
+stockname = "GME"
 
 
 
-df = yf.download(stockname, period="730d", interval="1h")
+
 
 
 def SMA(pastdays):
+    df = yf.download(stockname, period="3d", interval="1m")
     AAPL = df.reset_index()
     # ratio
     """
@@ -137,14 +140,72 @@ def Calcuate_PastDays(*args):
     df=df.astype(np.int)
     return df
 
+def Trade_LIVE(*args):
+    now = datetime.now()
+    current_time = now.strftime("%H%M%S")
+    x = int(Calcuate_PastDays())
+    df = SMA(pastdays=x)
+    buyandselldata = pd.DataFrame(columns = ['DateTime','Buy or Sell', 'Price',])
+    def buy_or_sell(*args):
+
+        for i in range(len(df)-1,0,-1):
+            if df['Buy'][i] > 0:
+                buyorsell = 1
+                break
+
+            if df['Sell'][i]>0:
+                buyorsell = 0
+                break
+
+        return buyorsell
+    total=0
+    buynum=-1
+    sellnum=-1
+    flag=-1
+    current_time=int(current_time)
+    while current_time<160000:
+        #REFRESH PAST DATA
+        df = SMA(pastdays=x)
+        buyorsell=buy_or_sell()
+        now = datetime.now()
+        current_time = now.strftime("%H%M%S")
+        current_time = int(current_time)
+        date_object = datetime.now()
+        # REFRESH PAST DATA
+
+        if buyorsell>0 and flag != 1:
+            print('BUY')
+            buyprice=df['AAPL'][df.index[len(df)-1]]
+            buyandselldata.loc[len(df.index)] = [date_object,'BUY',buyprice]
+            buynum=1
+            flag=1
+        if buyorsell<1 and flag != 0:
+            sellprice=df['AAPL'][df.index[len(df)-1]]
+            buyandselldata.loc[len(df.index)] = [date_object,'Sell', sellprice]
+            sellnum=1
+            print('Sell')
+            flag=0
+        if buynum>0 and sellnum>0:
+            subtotal=sellprice-buyprice
+            total=total+subtotal
+            buynum=0
+            sellnum=0
+        print('Current price is $'+str(df['AAPL'][df.index[len(df)-1]]))
+        print('Current Time '+str(current_time))
+        time.sleep(25)
+
+    buyandselldata.to_csv('STONKS.csv', index=False, mode='a',header=None)
+    return total
+
+print('This is the total profit $'+str(Trade_LIVE()))
 
 
 
-data=SMA(pastdays=int(Calcuate_PastDays()))
-print('Profit $'+str(Profit(data)))
-print('Pastdays is '+str(Calcuate_PastDays()))
 
 
+
+
+"""
 plt.figure(figsize=(12.5, 4.5))
 plt.plot(data['AAPL'], label='AAPL', alpha=0.35)
 plt.plot(data['SMA30'], label='SMA30', alpha=0.35)
@@ -157,3 +218,4 @@ plt.xlabel('Date')
 plt.ylabel9 = ('Adj Close Price')
 plt.legend(loc='upper left')
 plt.show()
+"""
