@@ -5,17 +5,19 @@ import pandas as pd
 import yfinance as yf
 import time
 from datetime import datetime
+import threading
+from multiprocessing import Process
 
 plt.style.use('fivethirtyeight')
 warnings.filterwarnings('ignore')
-stockname = "GME"
 
 
 
 
 
 
-def SMA(pastdays):
+
+def SMA(pastdays,stockname):
     df = yf.download(stockname, period="3d", interval="1m")
     AAPL = df.reset_index()
     # ratio
@@ -128,10 +130,10 @@ def Profit(data):
 
     return total_profit
 
-def Calcuate_PastDays(*args):
+def Calcuate_PastDays(stockname):
     profitvalues=[]
     for i in range(25):
-        data = SMA(pastdays=i)
+        data = SMA(i,stockname)
         profitvalues.append(Profit(data))
     profitvalues=np.array(profitvalues)
     df = pd.DataFrame(profitvalues, columns= ['Price'])
@@ -140,12 +142,12 @@ def Calcuate_PastDays(*args):
     df=df.astype(np.int)
     return df
 
-def Trade_LIVE(*args):
+def Trade_LIVE(stockname):
     now = datetime.now()
     current_time = now.strftime("%H%M%S")
-    x = int(Calcuate_PastDays())
-    df = SMA(pastdays=x)
-    buyandselldata = pd.DataFrame(columns = ['DateTime','Buy or Sell', 'Price',])
+    x = int(Calcuate_PastDays(stockname))
+    df = SMA(pastdays=x,stockname=stockname)
+    buyandselldata = pd.DataFrame(columns = ['DateTime','Buy or Sell', 'Price','StockName','MovingProfit','RunningTotal'])
     def buy_or_sell(*args):
 
         for i in range(len(df)-1,0,-1):
@@ -159,13 +161,16 @@ def Trade_LIVE(*args):
 
         return buyorsell
     total=0
+    subtotal=0
+    buyprice=0
+    sellprice=0
     buynum=-1
     sellnum=-1
     flag=-1
     current_time=int(current_time)
-    while current_time<160000:
+    while current_time<163000:
         #REFRESH PAST DATA
-        df = SMA(pastdays=x)
+        df = SMA(pastdays=x,stockname=stockname)
         buyorsell=buy_or_sell()
         now = datetime.now()
         current_time = now.strftime("%H%M%S")
@@ -176,12 +181,12 @@ def Trade_LIVE(*args):
         if buyorsell>0 and flag != 1:
             print('BUY')
             buyprice=df['AAPL'][df.index[len(df)-1]]
-            buyandselldata.loc[len(df.index)] = [date_object,'BUY',buyprice]
+            buyandselldata.loc[len(df.index)] = [date_object,'BUY',buyprice,stockname,subtotal,total]
             buynum=1
             flag=1
-        if buyorsell<1 and flag != 0:
+        if buyorsell<1 and flag != 0 and buyprice>0:
             sellprice=df['AAPL'][df.index[len(df)-1]]
-            buyandselldata.loc[len(df.index)] = [date_object,'Sell', sellprice]
+            buyandselldata.loc[len(df.index)] = [date_object,'Sell', sellprice, stockname,subtotal,total]
             sellnum=1
             print('Sell')
             flag=0
@@ -190,32 +195,53 @@ def Trade_LIVE(*args):
             total=total+subtotal
             buynum=0
             sellnum=0
-        print('Current price is $'+str(df['AAPL'][df.index[len(df)-1]]))
+        print('Stock mame is '+str(stockname))
+        print('Current price $'+str(df['AAPL'][df.index[len(df)-1]]))
         print('Current Time '+str(current_time))
+        print('Current Profit $'+str(total))
+        print('Pastdays is '+str(x))
+        print('-------------------------------------')
         time.sleep(25)
 
     buyandselldata.to_csv('STONKS.csv', index=False, mode='a',header=None)
+    print('DONE :)')
     return total
 
-print('This is the total profit $'+str(Trade_LIVE()))
+def Top_Stocks():
+    table=pd.read_html('https://finance.yahoo.com/gainers/?offset=0&count=5')
+    data=table[0]
+    data=data['Symbol']
+    data=data.to_numpy()
+    data=list(data)
+    return data #output is a numpy array
+
+def Trade_LIVE_Multi():
+    #makes you money much faster and makes code really complated
+    topstocks=Top_Stocks()
+    topstocks=['AAPL','AMZN','GOOGL','JNJ','ABC']
+
+    if __name__ == "__main__":
+        p1= Process(target=Trade_LIVE,args=['TSLA'])
+        p2 = Process(target=Trade_LIVE,args=['MSFT'])
+        p3 = Process(target=Trade_LIVE, args=['JNJ'])
+        p4 = Process(target=Trade_LIVE, args=['AAPL'])
+        p5 = Process(target=Trade_LIVE, args=['GME'])
+
+        p1.start()
+        p2.start()
+        p3.start()
+        p4.start()
+        p5.start()
+
+        p1.join()
+        p2.join()
+        p3.join()
+        p4.join()
+        p5.join()
 
 
 
 
 
 
-
-"""
-plt.figure(figsize=(12.5, 4.5))
-plt.plot(data['AAPL'], label='AAPL', alpha=0.35)
-plt.plot(data['SMA30'], label='SMA30', alpha=0.35)
-plt.plot(data['SMA100'], label='SMA100', alpha=0.35)
-plt.plot(data['SMA10'], label='SMA10', alpha=0.35)
-plt.scatter(data.index, data['Buy'], label="Buy", marker='^', color='green')
-plt.scatter(data.index, data['Sell'], label="Sell", marker='v', color='red')
-plt.title('SMA Buy or Sell')
-plt.xlabel('Date')
-plt.ylabel9 = ('Adj Close Price')
-plt.legend(loc='upper left')
-plt.show()
-"""
+Trade_LIVE_Multi()
