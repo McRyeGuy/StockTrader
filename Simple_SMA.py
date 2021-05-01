@@ -9,14 +9,12 @@ import time
 def DestionMaker(stockname):
     df = yf.download(stockname, period="5d", interval="1m")
 
-    AAPL=df
     AAPL = df.reset_index()
 
 
 
     SMA100=pd.DataFrame()
-    SMA100['Adj Close Price'] = AAPL['Close'].rolling(window=5).mean()
-    SMA5=AAPL['Close'].rolling(window=5).mean()
+    SMA100['Adj Close Price'] = AAPL['Close'].rolling(window=25).mean()
 
     data=pd.DataFrame()
     data['AAPL']=AAPL['Adj Close'] #SMA5
@@ -29,12 +27,12 @@ def DestionMaker(stockname):
         flag=-1
 
         for i in range(len(data)):
-            if data['SMA100'][i]<data['AAPL'][i] and flag!=1:
+            if data['SMA100'][i]<data['AAPL'][i]: # and flag!=1:
                 #BUY
                 sigPriceBuy.append(data['AAPL'][i])
                 sigPriceSell.append(np.nan)
                 flag=1
-            elif data['SMA100'][i]>data['AAPL'][i] and flag!=0:
+            elif data['SMA100'][i]>data['AAPL'][i]: #and flag!=0:
                 #SELL
                 sigPriceBuy.append(np.nan)
                 sigPriceSell.append(data['AAPL'][i])
@@ -100,7 +98,8 @@ def TradeLive(stockname):
     sellnum=-1
     flag=-1
     current_time=int(current_time)
-    while True: #current_time<160000:
+    tradenum=0
+    while True:#current_time<180000:
 
         #REFRESH PAST DATA
         df = DestionMaker(stockname=stockname)
@@ -116,6 +115,7 @@ def TradeLive(stockname):
             buyprice=df['AAPL'][df.index[len(df)-1]]
             buyandselldata.loc[len(df.index)] = [date_object,'BUY',buyprice,stockname,subtotal,total]
             buynum=1
+            tradenum=tradenum+1
             flag=1
         if buyorsell<1 and flag != 0 and buyprice>0:
             sellprice=df['AAPL'][df.index[len(df)-1]]
@@ -123,6 +123,7 @@ def TradeLive(stockname):
             sellnum=1
             print('Sell')
             flag=0
+            tradenum = tradenum + 1
         if buynum>0 and sellnum>0:
             subtotal=sellprice-buyprice
             total=total+subtotal
@@ -131,6 +132,7 @@ def TradeLive(stockname):
         print('Stock mame is '+str(stockname))
         print('Current price $'+str(df['AAPL'][df.index[len(df)-1]]))
         print('Current Time '+str(current_time))
+        print('Number of Trades: '+str(tradenum))
         print('Current Profit $'+str(total))
         print('-------------------------------------')
         time.sleep(15)
@@ -141,6 +143,20 @@ def Trade_LIVE_Multi():
     #makes you money much faster and makes code really complated
 
     if __name__ == "__main__":
+        print('')
+        print('  /$$$$$$    /$$                            /$$')
+        print(' /$$__  $$  | $$                           | $$')
+        print('| $$  \__/ /$$$$$$     /$$$$$$    /$$$$$$$ | $$   /$$  /$$$$$$$')
+        print('|  $$$$$$ |_  $$_/    /$$__  $$  /$$_____/ | $$  /$$/ /$$_____/')
+        print(' \____  $$  | $$     | $$  \ $$ | $$       | $$$$$$/ |  $$$$$$')
+        print(' /$$  \ $$  | $$ /$$ | $$  | $$ | $$       | $$_  $$  \____  $$')
+        print('|  $$$$$$/  |  $$$$/ |  $$$$$$/ |  $$$$$$$ | $$ \  $$ /$$$$$$$/')
+        print(' \______/    \____/   \______/   \_______/ |__/  \__/ _______/')
+        print('Created by: Ryan Krueger')
+        print('"Make your friends rich and your enemies rich and wait to see which is which"')
+        print('')
+        print('')
+
         p1= Process(target=TradeLive,args=['XLM-USD'])
         p2 = Process(target=TradeLive,args=['LINK-USD'])
         p3 = Process(target=TradeLive, args=['DOT1-USD'])
@@ -165,30 +181,4 @@ def Trade_LIVE_Multi():
         p6.join()
         p7.join()
 
-        print('')
-        print('  /$$$$$$    /$$                            /$$')
-        print(' /$$__  $$  | $$                           | $$')
-        print('| $$  \__/ /$$$$$$     /$$$$$$    /$$$$$$$ | $$   /$$  /$$$$$$$')
-        print('|  $$$$$$ |_  $$_/    /$$__  $$  /$$_____/ | $$  /$$/ /$$_____/')
-        print(' \____  $$  | $$     | $$  \ $$ | $$       | $$$$$$/ |  $$$$$$')
-        print(' /$$  \ $$  | $$ /$$ | $$  | $$ | $$       | $$_  $$  \____  $$')
-        print('|  $$$$$$/  |  $$$$/ |  $$$$$$/ |  $$$$$$$ | $$ \  $$ /$$$$$$$/')
-        print(' \______/    \____/   \______/   \_______/ |__/  \__/ _______/')
-        print('Created by: Ryan Krueger')
-
 Trade_LIVE_Multi()
-'''
-data=DestionMaker('XOM')
-print(Profit(data))
-
-plt.figure(figsize=(12.5, 4.5))
-plt.plot(data['AAPL'], label='AAPL', alpha=0.35, linewidth=1)
-plt.plot(data['SMA100'], label='SMA100', alpha=0.35, linewidth=1)
-plt.scatter(data.index, data['Buy'], label="Buy", marker='^', color='green')
-plt.scatter(data.index, data['Sell'], label="Sell", marker='v', color='red')
-plt.title('SMA Buy or Sell')
-plt.xlabel('Interval of Time')
-plt.ylabel9 = ('Close Price')
-plt.legend(loc='upper left')
-plt.show()
-'''
