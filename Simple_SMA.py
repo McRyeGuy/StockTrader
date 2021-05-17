@@ -1,13 +1,14 @@
 import yfinance as yf
-import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 from multiprocessing import Process
 from datetime import datetime
 import time
 
+
+
 def DestionMaker(stockname):
-    df = yf.download(stockname, period="5d", interval="1m")
+    df = yf.download(stockname, period="2d", interval="1m")
 
     AAPL = df.reset_index()
 
@@ -27,12 +28,12 @@ def DestionMaker(stockname):
         flag=-1
 
         for i in range(len(data)):
-            if data['SMA100'][i]<data['AAPL'][i]: # and flag!=1:
+            if data['SMA100'][i]<data['AAPL'][i] and flag!=1:
                 #BUY
                 sigPriceBuy.append(data['AAPL'][i])
                 sigPriceSell.append(np.nan)
                 flag=1
-            elif data['SMA100'][i]>data['AAPL'][i]: #and flag!=0:
+            elif data['SMA100'][i]>data['AAPL'][i] and flag!=0:
                 #SELL
                 sigPriceBuy.append(np.nan)
                 sigPriceSell.append(data['AAPL'][i])
@@ -77,7 +78,7 @@ def TradeLive(stockname):
     now = datetime.now()
     current_time = now.strftime("%H%M%S")
     df = DestionMaker(stockname=stockname)
-    buyandselldata = pd.DataFrame(columns = ['DateTime','Buy or Sell', 'Price','StockName','MovingProfit','RunningTotal'])
+    buyandselldata = pd.DataFrame(columns = ['DateTime','Buy or Sell', 'Price','StockName','total','subtotal','buyprice','sellprice','buynum','sellnum','tradenum','marker'])
     def buy_or_sell(*args):
 
         for i in range(len(df)-1,0,-1):
@@ -90,16 +91,19 @@ def TradeLive(stockname):
                 break
 
         return buyorsell
-    total=0
-    subtotal=0
-    buyprice=0
-    sellprice=0
-    buynum=-1
-    sellnum=-1
-    flag=-1
-    current_time=int(current_time)
-    tradenum=0
-    while True:#current_time<180000:
+
+    while True:
+        #GET Yesterdays Data
+        yesterdaysdata = pd.read_csv('STONKS.csv')
+
+        total = yesterdaysdata["total"].iloc[-1]
+        subtotal = yesterdaysdata["subtotal"].iloc[-1]
+        buyprice = yesterdaysdata["buyprice"].iloc[-1]
+        sellprice = yesterdaysdata["sellprice"].iloc[-1]
+        buynum = yesterdaysdata["buynum"].iloc[-1]
+        sellnum = yesterdaysdata["sellnum"].iloc[-1]
+        tradenum = yesterdaysdata["tradenum"].iloc[-1]
+        marker = yesterdaysdata["marker"].iloc[-1]
 
         #REFRESH PAST DATA
         df = DestionMaker(stockname=stockname)
@@ -110,75 +114,46 @@ def TradeLive(stockname):
         date_object = datetime.now()
         # REFRESH PAST DATA
 
-        if buyorsell>0 and flag != 1:
+        if buyorsell>0 and marker != 1:
             print('BUY')
             buyprice=df['AAPL'][df.index[len(df)-1]]
-            buyandselldata.loc[len(df.index)] = [date_object,'BUY',buyprice,stockname,subtotal,total]
             buynum=1
             tradenum=tradenum+1
-            flag=1
-        if buyorsell<1 and flag != 0 and buyprice>0:
+            marker=1
+            buyandselldata.loc[len(df.index)] = [date_object, 'BUY', buyprice, stockname, total, subtotal, buyprice,
+                                                 sellprice, buynum, sellnum, tradenum, marker]
+
+        if buyorsell<1 and marker != 0 and buyprice>0:
             sellprice=df['AAPL'][df.index[len(df)-1]]
-            buyandselldata.loc[len(df.index)] = [date_object,'Sell', sellprice, stockname,subtotal,total]
             sellnum=1
             print('Sell')
-            flag=0
+            marker=0
             tradenum = tradenum + 1
+            buyandselldata.loc[len(df.index)] = [date_object, 'Sell', sellprice, stockname, total, subtotal, buyprice,
+                                                 sellprice, buynum, sellnum, tradenum, marker]
+
         if buynum>0 and sellnum>0:
             subtotal=sellprice-buyprice
             total=total+subtotal
             buynum=0
             sellnum=0
+            buyandselldata.loc[len(df.index)] = [date_object, 'Sell', sellprice, stockname, total, subtotal, buyprice,
+                                                 sellprice, buynum, sellnum, tradenum, marker]
+        print(marker)
         print('Stock mame is '+str(stockname))
         print('Current price $'+str(df['AAPL'][df.index[len(df)-1]]))
         print('Current Time '+str(current_time))
         print('Number of Trades: '+str(tradenum))
         print('Current Profit $'+str(total))
         print('-------------------------------------')
-        time.sleep(15)
+        buyandselldata.to_csv('STONKS.csv', index=False, mode='a',header=None)
+        del buyandselldata
+        buyandselldata = pd.DataFrame(
+            columns=['DateTime', 'Buy or Sell', 'Price', 'StockName', 'total', 'subtotal', 'buyprice', 'sellprice',
+                     'buynum', 'sellnum', 'tradenum', 'marker'])
+        time.sleep(60)
 
-    buyandselldata.to_csv('STONKS.csv', index=False, mode='a',header=None)
     return total
-def Trade_LIVE_Multi():
-    #makes you money much faster and makes code really complated
 
-    if __name__ == "__main__":
-        print('')
-        print('  /$$$$$$    /$$                            /$$')
-        print(' /$$__  $$  | $$                           | $$')
-        print('| $$  \__/ /$$$$$$     /$$$$$$    /$$$$$$$ | $$   /$$  /$$$$$$$')
-        print('|  $$$$$$ |_  $$_/    /$$__  $$  /$$_____/ | $$  /$$/ /$$_____/')
-        print(' \____  $$  | $$     | $$  \ $$ | $$       | $$$$$$/ |  $$$$$$')
-        print(' /$$  \ $$  | $$ /$$ | $$  | $$ | $$       | $$_  $$  \____  $$')
-        print('|  $$$$$$/  |  $$$$/ |  $$$$$$/ |  $$$$$$$ | $$ \  $$ /$$$$$$$/')
-        print(' \______/    \____/   \______/   \_______/ |__/  \__/ _______/')
-        print('Created by: Ryan Krueger')
-        print('"Make your friends rich and your enemies rich and wait to see which is which"')
-        print('')
-        print('')
 
-        p1= Process(target=TradeLive,args=['XLM-USD'])
-        p2 = Process(target=TradeLive,args=['LINK-USD'])
-        p3 = Process(target=TradeLive, args=['DOT1-USD'])
-        p4 = Process(target=TradeLive, args=['USDT-USD'])
-        p5 = Process(target=TradeLive, args=['ETH-USD'])
-        p6 = Process(target=TradeLive, args=['DOGE-USD'])
-        p7 = Process(target=TradeLive, args=['BTC-USD'])
-
-        p1.start()
-        p2.start()
-        p3.start()
-        p4.start()
-        p5.start()
-        p6.start()
-        p7.start()
-
-        p1.join()
-        p2.join()
-        p3.join()
-        p4.join()
-        p5.join()
-        p6.join()
-        p7.join()
-
-Trade_LIVE_Multi()
+TradeLive("BTC-USD")
