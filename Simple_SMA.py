@@ -92,68 +92,79 @@ def TradeLive(stockname):
 
         return buyorsell
 
-    while True:
-        #GET Yesterdays Data
-        yesterdaysdata = pd.read_csv('STONKS.csv')
 
-        total = yesterdaysdata["total"].iloc[-1]
-        subtotal = yesterdaysdata["subtotal"].iloc[-1]
-        buyprice = yesterdaysdata["buyprice"].iloc[-1]
-        sellprice = yesterdaysdata["sellprice"].iloc[-1]
-        buynum = yesterdaysdata["buynum"].iloc[-1]
-        sellnum = yesterdaysdata["sellnum"].iloc[-1]
-        tradenum = yesterdaysdata["tradenum"].iloc[-1]
-        marker = yesterdaysdata["marker"].iloc[-1]
+    #GET Yesterdays Data
+    yesterdaysdata = pd.read_csv('STONKS.csv')
 
-        #REFRESH PAST DATA
-        df = DestionMaker(stockname=stockname)
-        buyorsell=buy_or_sell()
-        now = datetime.now()
-        current_time = now.strftime("%H%M%S")
-        current_time = int(current_time)
-        date_object = datetime.now()
-        # REFRESH PAST DATA
+    total = yesterdaysdata["total"].iloc[-1]
+    subtotal = yesterdaysdata["subtotal"].iloc[-1]
+    buyprice = yesterdaysdata["buyprice"].iloc[-1]
+    sellprice = yesterdaysdata["sellprice"].iloc[-1]
+    buynum = yesterdaysdata["buynum"].iloc[-1]
+    sellnum = yesterdaysdata["sellnum"].iloc[-1]
+    tradenum = yesterdaysdata["tradenum"].iloc[-1]
+    marker = yesterdaysdata["marker"].iloc[-1]
 
-        if buyorsell>0 and marker != 1:
-            print('BUY')
-            buyprice=df['AAPL'][df.index[len(df)-1]]
-            buynum=1
-            tradenum=tradenum+1
-            marker=1
-            buyandselldata.loc[len(df.index)] = [date_object, 'BUY', buyprice, stockname, total, subtotal, buyprice,
+    #REFRESH PAST DATA
+    df = DestionMaker(stockname=stockname)
+    buyorsell=buy_or_sell()
+    now = datetime.now()
+    current_time = now.strftime("%H%M%S")
+    current_time = int(current_time)
+    date_object = datetime.now()
+    # REFRESH PAST DATA
+
+    if buyorsell>0 and marker != 1:
+        print('BUY')
+        buyprice=df['AAPL'][df.index[len(df)-1]]
+        buynum=1
+        tradenum=tradenum+1
+        marker=1
+        buyandselldata.loc[len(df.index)] = [date_object, 'BUY', buyprice, stockname, total, subtotal, buyprice,
                                                  sellprice, buynum, sellnum, tradenum, marker]
 
-        if buyorsell<1 and marker != 0 and buyprice>0:
-            sellprice=df['AAPL'][df.index[len(df)-1]]
-            sellnum=1
-            print('Sell')
-            marker=0
-            tradenum = tradenum + 1
-            buyandselldata.loc[len(df.index)] = [date_object, 'Sell', sellprice, stockname, total, subtotal, buyprice,
+    if buyorsell<1 and marker != 0 and buyprice>0:
+        sellprice=df['AAPL'][df.index[len(df)-1]]
+        sellnum=1
+        print('Sell')
+        marker=0
+        tradenum = tradenum + 1
+        buyandselldata.loc[len(df.index)] = [date_object, 'Sell', sellprice, stockname, total, subtotal, buyprice,
                                                  sellprice, buynum, sellnum, tradenum, marker]
 
-        if buynum>0 and sellnum>0:
-            subtotal=sellprice-buyprice
-            total=total+subtotal
-            buynum=0
-            sellnum=0
-            buyandselldata.loc[len(df.index)] = [date_object, 'Sell', sellprice, stockname, total, subtotal, buyprice,
+    if buynum>0 and sellnum>0:
+        subtotal=sellprice-buyprice
+        total=total+subtotal
+        buynum=0
+        sellnum=0
+        buyandselldata.loc[len(df.index)] = [date_object, 'Sell', sellprice, stockname, total, subtotal, buyprice,
                                                  sellprice, buynum, sellnum, tradenum, marker]
-        print(marker)
-        print('Stock mame is '+str(stockname))
-        print('Current price $'+str(df['AAPL'][df.index[len(df)-1]]))
-        print('Current Time '+str(current_time))
-        print('Number of Trades: '+str(tradenum))
-        print('Current Profit $'+str(total))
-        print('-------------------------------------')
-        buyandselldata.to_csv('STONKS.csv', index=False, mode='a',header=None)
-        del buyandselldata
-        buyandselldata = pd.DataFrame(
-            columns=['DateTime', 'Buy or Sell', 'Price', 'StockName', 'total', 'subtotal', 'buyprice', 'sellprice',
+
+    print('Stock mame is '+str(stockname))
+    print('Current price $'+str(df['AAPL'][df.index[len(df)-1]]))
+    print('Current Time '+str(current_time))
+    print('Number of Trades: '+str(tradenum))
+    print('Current Profit $'+str(total))
+    print('-------------------------------------')
+    buyandselldata.to_csv('STONKS.csv', index=False, mode='a',header=None)
+    del buyandselldata
+    buyandselldata = pd.DataFrame(
+        columns=['DateTime', 'Buy or Sell', 'Price', 'StockName', 'total', 'subtotal', 'buyprice', 'sellprice',
                      'buynum', 'sellnum', 'tradenum', 'marker'])
-        time.sleep(60)
+
 
     return total
 
+#RUNNING CODE
 
-TradeLive("BTC-USD")
+
+
+if datetime.today().isoweekday() == 1 or datetime.today().isoweekday() == 2 or datetime.today().isoweekday() == 3 \
+        or datetime.today().isoweekday() == 4 or datetime.today().isoweekday() == 5:
+
+    for i in range(1000):
+        TradeLive("BTC-USD")
+        time.sleep(60)
+
+else:
+    print('#---Weekend---#')
