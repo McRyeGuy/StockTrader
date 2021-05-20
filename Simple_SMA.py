@@ -1,7 +1,7 @@
 import yfinance as yf
 import pandas as pd
 import numpy as np
-from multiprocessing import Process
+import schedule
 from datetime import datetime
 import time
 
@@ -158,13 +158,15 @@ def TradeLive(stockname):
 #RUNNING CODE
 
 
+def Run ():
+    if datetime.today().isoweekday() == 1 or datetime.today().isoweekday() == 2 or datetime.today().isoweekday() == 3 \
+            or datetime.today().isoweekday() == 4 or datetime.today().isoweekday() == 5:
 
-if datetime.today().isoweekday() == 1 or datetime.today().isoweekday() == 2 or datetime.today().isoweekday() == 3 \
-        or datetime.today().isoweekday() == 4 or datetime.today().isoweekday() == 5:
+        for i in range(100):
+            TradeLive("DOGE-USD")
+            time.sleep(60)
 
-    for i in range(1000):
-        TradeLive("BTC-USD")
-        time.sleep(60)
+    else:
+        print('#---Weekend---#')
 
-else:
-    print('#---Weekend---#')
+schedule.every(10).minutes.do(Run())
