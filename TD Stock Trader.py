@@ -3,9 +3,9 @@ import json
 from tda.orders.equities import equity_buy_limit
 from tda.orders.common import Duration, Session
 token_path = 'token'
-api_key = 'XDPDQQPEKEYTYBN7S4EGYARCI8TTA7AE@AMER.OAUTHAP'
+api_key = '----your_api_key'
 #redirect_uri = 'http://localhost'
-account_id = 489975297
+account_id = "-your account id"
 
 
 client = auth.client_from_token_file('token',api_key)
